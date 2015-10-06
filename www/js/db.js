@@ -21,3 +21,44 @@ request.onupgradeneeded = function(){
 	}
 	
 }
+
+request.onsuccess = function(event){
+	console.log('Database opened successfully');
+	
+	db = event.target.result;
+	
+	// Get all subjects
+	getSubjects();
+	
+	mobileDiary.onPageInit('index', function(page){
+		getSubjects();
+	});
+}
+
+request.onerror = function(event){
+	console.log('Error, Database not opened');
+}
+
+function addSubject(){
+	var title = $('#title').val();
+	var transaction = db.transaction(["subjects"],"readwrite");
+	var store = transaction.objectStore("subjects");
+
+	//Define Store
+	var subject= {
+		title: title
+	}
+
+	// Perfom the subject add
+	var request = store.add(subject);
+
+	//Success
+	request.onsuccess = function(event){
+		console.log('Subject Added!');
+	}
+
+	//Fail
+	request.onerror = function(event){
+		console.log('There Was An Error!');
+	}
+}
