@@ -62,3 +62,30 @@ function addSubject(){
 		console.log('There Was An Error!');
 	}
 }
+
+function getSubjects(){
+	console.log('Getting subjects');
+	
+	var transaction = db.transaction(["subjects"],"readonly");
+	
+	var store = transaction.objectStore("subjects");
+	
+	var index = store.index("title");
+	
+	var output = '';
+	
+	index.openCursor().onsuccess = function(event){
+		var cursor = event.target.result;
+		
+		if(cursor){
+			output += '<li><a href="entries.html" class="item-link">'+
+                      '<div class="item-content">'+
+                        '<div class="item-inner"> '+
+                         '<div class="item-title">'+cursor.value.title+'</div>'+
+                        '</div>'+
+                      '</div></a></li>';
+            cursor.continue();
+		}
+		$('#subjectList').html(output);
+	}
+}
