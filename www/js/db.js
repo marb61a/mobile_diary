@@ -33,6 +33,19 @@ request.onsuccess = function(event){
 	mobileDiary.onPageInit('index', function(page){
 		getSubjects();
 	});
+	
+	mobileDiary.onPageInit('new-entry', function(page){
+		getSubjectList();
+	});
+	
+	mobileDiary.onPageInit('new-entry', function(page){
+		// Get Formatted Current Date
+   		Date.prototype.toDateInputValue = (function() {
+	        var local = new Date(this);
+	        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+	        return local.toJSON().slice(0,10);
+	    });
+	});
 }
 
 request.onerror = function(event){
@@ -49,7 +62,7 @@ function addSubject(){
 		title: title
 	}
 
-	// Perfom the subject add
+	// Perform the subject add
 	var request = store.add(subject);
 
 	//Success
@@ -87,5 +100,27 @@ function getSubjects(){
             cursor.continue();
 		}
 		$('#subjectList').html(output);
+	}
+}
+
+
+// Get a list of subject for the entry form
+function getSubjectList(current){
+	var transaction = db.transaction(["subjects"],"readonly");
+	var store = transaction.objectStore("subjects");
+	var index = store.index("title");
+	
+	var output = '';
+	index.openCursor().onsuccess = function(event) {
+		var cursor = event.target.result;
+		if(cursor) {	
+			if(cursor.value.id == current){
+				output += '<option value="'+cursor.value.id+'" selected>'+cursor.value.title+'</option>';
+			} else {
+            	output += '<option value="'+cursor.value.id+'">'+cursor.value.title+'</option>';
+        	}
+			cursor.continue();
+		}
+		$("#subjectSelect").html(output);
 	}
 }
