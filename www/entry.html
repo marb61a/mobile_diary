@@ -14,12 +14,69 @@
     <div class="page-content">
       <div class="content-block">
         <div class="content-block-inner">
-          <h3>Entry Title</h3>
-        <p>Posted on: 05/29/2015</p>
-          <p>Mauris posuere sit amet metus id venenatis. Ut ante dolor, tempor nec commodo rutrum, varius at sem. Nullam ac nisi non neque ornare pretium. Nulla mauris mauris, consequat et elementum sit amet, egestas sed orci. In hac habitasse platea dictumst.</p>
-          <p>Fusce eros lectus, accumsan eget mi vel, iaculis tincidunt felis. Nulla tincidunt pharetra sagittis. Fusce in felis eros. Nulla sit amet aliquam lorem, et gravida ipsum. Mauris consectetur nisl non sollicitudin tristique. Praesent vitae metus ac quam rhoncus mattis vel et nisi. Aenean aliquet, felis quis dignissim iaculis, lectus quam tincidunt ligula, et venenatis turpis risus sed lorem. Morbi eu metus elit. Ut vel diam dolor.</p>
+          <h3 id="entryTitle"></h3>
+          <p><strong>Entered On: </strong> <span id="entryDate"></span></p>
+          <div id="entryBody"></div>
         </div>
       </div>
+
+      <div class="content-block">
+      <div class="row">
+        <div class="col-50"><div id="editBtn"></div></div>
+        <div class="col-50"><div id="deleteBtn"></div></div>
+      </div>
+    </div>
+
+    <form id="editForm">
+          <div class="list-block">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner"> 
+                    <div class="item-title label">Title</div>
+                    <div class="item-input">
+                      <input type="text" name="title" id="title" placeholder="Entry title"/>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner"> 
+                    <div class="item-title label">Subject</div>
+                    <div class="item-input">
+                      <select name="subject" id="subjectSelect"></select>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner"> 
+                    <div class="item-title label">Date</div>
+                    <div class="item-input">
+                      <input name="date" id="datePicker" type="date"/>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="align-top">
+                <div class="item-content">
+                  <div class="item-inner"> 
+                    <div class="item-title label">Body</div>
+                    <div class="item-input">
+                      <textarea name="body" id="body"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="content-block">
+                <input type="submit" value="Submit" class="button button-small button-fill color-green"/>
+          </div>
+      </form>
+
     </div>
   </div>
 </div>
