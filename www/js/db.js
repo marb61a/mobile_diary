@@ -124,3 +124,63 @@ function getSubjectList(current){
 		$("#subjectSelect").html(output);
 	}
 }
+
+// Add an entry
+function addEntry(){
+	var title 	= $('#title').val();
+	var subject = $('#subjectSelect').val();
+	var date 	= $('#datePicker').val();
+	var body 	= $('#body').val();
+
+	var transaction = db.transaction(["entries"],"readwrite");
+
+	var store = transaction.objectStore("entries");
+
+	//Define Store
+	var entry= {
+		title: title,
+		subject: subject,
+		date: date,
+		body:body
+	}
+
+	// Perfomr the add
+	var request = store.add(entry);
+
+	//Success
+	request.onsuccess = function(event){
+		console.log('Entry Added!');
+	}
+
+	//Fail
+	request.onerror = function(event){
+		console.log('There Was An Error!');
+	}
+}
+
+// Display entries
+function getEntries(subjectId){
+	mobileDiary.onPageInit('entries', function (page) {
+		getSubjectTitle(subjectId);
+   		var transaction = db.transaction(["entries"],"readonly");
+		var store = transaction.objectStore("entries");
+		var index = store.index("title");
+
+		var output = '';
+		index.openCursor().onsuccess = function(event){
+			var cursor = event.target.result;
+			if(cursor){
+				if(cursor.value.subject == subjectId){
+				output += '<li><a onclick="getEntry('+cursor.value.id+')" href="entry.html" class="item-link">'+
+	                      '<div class="item-content">'+
+	                        '<div class="item-inner"> '+
+	                         '<div class="item-title">'+cursor.value.title+'</div>'+
+	                        '</div>'+
+	                      '</div></a></li>';
+	            }
+	            cursor.continue();
+			}
+			$('#entryList').html(output);
+		}
+	});
+}
