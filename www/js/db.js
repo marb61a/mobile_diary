@@ -222,3 +222,46 @@ function getEntry(entryId){
 		}
 	});
 }
+
+function showEditForm(){
+	$('#editForm').slideToggle();
+}
+
+// Delete entry
+function removeEntry(entryId){
+	var transaction = db.transaction(["entries"],"readwrite");
+	var store = transaction.objectStore("entries");
+	var request = store.delete(entryId);
+
+	request.onsuccess = function(event){
+		console.log('Entry Removed');
+	}
+}
+
+// Edit entry
+function editEntry(entryId){
+	//Get transaction
+	var transaction = db.transaction(["entries"],"readwrite");
+	var store = transaction.objectStore("entries");
+	
+	var request = store.get(entryId);
+	
+	request.onsuccess = function(event) {
+		var data = request.result;
+		
+		// Get New Data Values
+		data.title 		= $('#title').val();
+		data.subject 	= $('#subjectSelect').val();
+		data.date		= $('#datePicker').val();
+		data.body 		= $('#body').val();
+
+		//Store Update
+		var requestUpdate = store.put(data);
+		requestUpdate.onerror = function(event) {
+			console.log('There was a problem updating the entry');
+		};
+		requestUpdate.onsuccess = function(event) {
+			console.log('Entry Updated...');
+		};
+	};
+}
