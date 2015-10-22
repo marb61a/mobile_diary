@@ -184,3 +184,41 @@ function getEntries(subjectId){
 		}
 	});
 }
+
+// Get subject title
+function getSubjectTitle(id){
+	var transaction = db.transaction(["subjects"],"readonly");
+	var store = transaction.objectStore("subjects");
+	var request = store.get(id);
+
+	request.onsuccess = function(event){
+		var subjectTitle = request.result.title;
+		$('#subjectTitle').html(subjectTitle);
+	}
+}
+
+// Get single entry
+function getEntry(entryId){
+	mobileDiary.onPageInit('entry', function (page) {
+   		var transaction = db.transaction(["entries"],"readonly");
+		var store = transaction.objectStore("entries");
+		var request = store.get(entryId);
+
+		request.onsuccess = function(event){
+			$('#editForm').attr('onsubmit','editEntry('+entryId+')');
+			$('#entryTitle').html(request.result.title);
+		  	$('#entryDate').html(request.result.date);
+		  	$('#entryBody').html(request.result.body);
+
+		  	 // Edit Form Fields
+		  getSubjectList(request.result.subject);
+		  $('#title').attr('value', request.result.title);
+		  $('#datePicker').attr('value', request.result.date);
+		  $('#body').html(request.result.body);
+
+
+		  	$('#editBtn').html('<a href="#" onclick="showEditForm()" class="button button-small button-fill color-blue">Edit</a>');
+		  	$('#deleteBtn').html('<a href="index.html" onclick="removeEntry('+entryId+')" class="button button-small button-fill color-red">Delete</a>');
+		}
+	});
+}
