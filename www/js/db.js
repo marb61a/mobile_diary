@@ -1,16 +1,24 @@
+// Display Quicknote
+getQuickNote();
+
+mobileDiary.onPageInit('index', function (page) {
+	getQuickNote();
+});
+
+
 var request = indexedDB.open("mobilediary", 1);
 
-request.onupgradeneeded = function(){
+request.onupgradeneeded = function(event){
 	var db = event.target.result;
-	
-	// Subjects table
+
+	// Subjects Table
 	if(!db.objectStoreNames.contains("subjects")){
 		var os = db.createObjectStore("subjects", {keyPath: "id", autoIncrement: true});
 
 		os.createIndex("title", "title", {unique:false});
 	}
-	
-	// Entries table
+
+	// Entries Table
 	if(!db.objectStoreNames.contains("entries")){
 		var os = db.createObjectStore("entries", {keyPath: "id", autoIncrement: true});
 
@@ -19,42 +27,45 @@ request.onupgradeneeded = function(){
 		os.createIndex("date", "date", {unique:false});
 		os.createIndex("body", "body", {unique:false});
 	}
-	
 }
 
 request.onsuccess = function(event){
-	console.log('Database opened successfully');
-	
+	console.log('Success: Database Opened!');
 	db = event.target.result;
-	
-	// Get all subjects
+
+	// Get All Subjects
 	getSubjects();
-	
-	mobileDiary.onPageInit('index', function(page){
-		getSubjects();
+
+	mobileDiary.onPageInit('index', function (page) {
+   		getSubjects();
 	});
-	
-	mobileDiary.onPageInit('new-entry', function(page){
-		getSubjectList();
+
+	mobileDiary.onPageInit('new-entry', function (page) {
+   		getSubjectList();
 	});
-	
-	mobileDiary.onPageInit('new-entry', function(page){
-		// Get Formatted Current Date
+
+	mobileDiary.onPageInit('new-entry', function (page) {
+   		// Get Formatted Current Date
    		Date.prototype.toDateInputValue = (function() {
 	        var local = new Date(this);
 	        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
 	        return local.toJSON().slice(0,10);
 	    });
+
+	   // Display Current Date in Date Field
+	   $('#datePicker').val(new Date().toDateInputValue());
 	});
 }
 
 request.onerror = function(event){
-	console.log('Error, Database not opened');
+	console.log('Error: Database NOT Opened!');
 }
 
 function addSubject(){
 	var title = $('#title').val();
+
 	var transaction = db.transaction(["subjects"],"readwrite");
+
 	var store = transaction.objectStore("subjects");
 
 	//Define Store
@@ -62,7 +73,7 @@ function addSubject(){
 		title: title
 	}
 
-	// Perform the subject add
+	// Perfomr the add
 	var request = store.add(subject);
 
 	//Success
@@ -76,22 +87,19 @@ function addSubject(){
 	}
 }
 
+
 function getSubjects(){
-	console.log('Getting subjects');
-	
+	console.log('Fetching Subjects...');
+
 	var transaction = db.transaction(["subjects"],"readonly");
-	
 	var store = transaction.objectStore("subjects");
-	
 	var index = store.index("title");
-	
+
 	var output = '';
-	
 	index.openCursor().onsuccess = function(event){
 		var cursor = event.target.result;
-		
 		if(cursor){
-			output += '<li><a href="entries.html" class="item-link">'+
+			output += '<li><a onclick="getEntries('+cursor.value.id+')" href="entries.html" class="item-link">'+
                       '<div class="item-content">'+
                         '<div class="item-inner"> '+
                          '<div class="item-title">'+cursor.value.title+'</div>'+
@@ -103,8 +111,7 @@ function getSubjects(){
 	}
 }
 
-
-// Get a list of subject for the entry form
+// Get List of Subjects For Entry Form
 function getSubjectList(current){
 	var transaction = db.transaction(["subjects"],"readonly");
 	var store = transaction.objectStore("subjects");
@@ -125,7 +132,8 @@ function getSubjectList(current){
 	}
 }
 
-// Add an entry
+
+// Add an Entry
 function addEntry(){
 	var title 	= $('#title').val();
 	var subject = $('#subjectSelect').val();
@@ -158,7 +166,7 @@ function addEntry(){
 	}
 }
 
-// Display entries
+// Get & Display Entries
 function getEntries(subjectId){
 	mobileDiary.onPageInit('entries', function (page) {
 		getSubjectTitle(subjectId);
@@ -185,7 +193,8 @@ function getEntries(subjectId){
 	});
 }
 
-// Get subject title
+
+// Get the SubjectTitle
 function getSubjectTitle(id){
 	var transaction = db.transaction(["subjects"],"readonly");
 	var store = transaction.objectStore("subjects");
@@ -197,7 +206,7 @@ function getSubjectTitle(id){
 	}
 }
 
-// Get single entry
+// get a single entry
 function getEntry(entryId){
 	mobileDiary.onPageInit('entry', function (page) {
    		var transaction = db.transaction(["entries"],"readonly");
@@ -227,7 +236,7 @@ function showEditForm(){
 	$('#editForm').slideToggle();
 }
 
-// Delete entry
+// Delete an Entry
 function removeEntry(entryId){
 	var transaction = db.transaction(["entries"],"readwrite");
 	var store = transaction.objectStore("entries");
@@ -238,7 +247,6 @@ function removeEntry(entryId){
 	}
 }
 
-// Edit entry
 function editEntry(entryId){
 	//Get transaction
 	var transaction = db.transaction(["entries"],"readwrite");
@@ -264,4 +272,22 @@ function editEntry(entryId){
 			console.log('Entry Updated...');
 		};
 	};
+}
+
+function getQuickNote(){
+	if(localStorage.note == null){
+		$('#quickNote').html('You can add a quick note here. Just press the button below to update it at any time');
+	} else {
+		$('#quickNote').html(localStorage.note);
+	}
+}
+
+function showNoteForm(){
+	$('#quickNote').toggle();
+	$('#quickNoteForm').toggle();
+}
+
+function saveQuickNote(){
+	var newNote = $('#note').val();
+	localStorage.setItem('note', newNote);
 }

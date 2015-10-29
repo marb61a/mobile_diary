@@ -13,6 +13,7 @@
     <!-- Scrollable page content-->
     <div class="page-content">
       <div class="content-block-title">New Entry</div>
+      <form onsubmit="addEntry()">
       <div class="list-block">
         <ul>
           <li>
@@ -31,8 +32,6 @@
                 <div class="item-title label">Subject</div>
                 <div class="item-input">
                  <select id="subjectSelect">
-                  <option>Selh help</option>
-                    <option>Brainstorming</option>
                  </select>
                 </div>
               </div>
@@ -53,7 +52,7 @@
               <div class="item-inner"> 
                 <div class="item-title label">Body</div>
                 <div class="item-input">
-                  <textarea id="title"></textarea>
+                  <textarea id="body"></textarea>
                 </div>
               </div>
             </div>
@@ -69,7 +68,7 @@
           </div>
         </div>
       </div>
-      
+      </form>
     </div>
   </div>
 </div>

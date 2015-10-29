@@ -49,15 +49,24 @@
               <div class="content-block-title">Quick Note</div>
               <div class="content-block">
                 <div class="content-block-inner">
-                  <p>This is the quick note area</p>
-                  <p>Duis sed erat ac eros ultrices pharetra id ut tellus. Praesent rhoncus enim ornare ipsum aliquet ultricies. Pellentesque sodales erat quis elementum sagittis.</p>
+                 <div id="quickNote"></div>
+                 <br>
+                 <div id="quickNoteForm">
+                  <form onsubmit="editQuickNote()">
+                    <div class="item-input">
+                      <textarea name="note" id="note"></textarea>
+                    </div>
+                    <button onclick="saveQuickNote()" class="button">Update</button>
+                  </form>
+                 </div>
+                 <br>
+                 <button onclick="showNoteForm()" class="button">Edit Quick Note</button>
                 </div>
               </div>
               <div class="content-block-title">Diary Subjects</div>
               <div class="list-block">
                 <ul id="subjectList"></ul>
               </div>
-              <div class="content-block-title">Side panels</div>
               <div class="content-block">
                 <div class="row">
                   <div class="col-50"><a href="new-entry.html" data-panel="left" class="button item-link">New Entry</a></div>
@@ -75,6 +84,6 @@
     <script type="text/javascript" src="js/framework7.min.js"></script>
     <!-- Path to your app js-->
     <script type="text/javascript" src="js/my-app.js"></script>
-    <script type="text/javascript" src="js/db.js"></script>
+ 
   </body>
 </html>
